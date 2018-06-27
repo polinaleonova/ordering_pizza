@@ -12,7 +12,7 @@ class Pizza(models.Model):
 
 
 class Order(models.Model):
-    pizza_id = models.ForeignKey(Pizza, related_name='ordered', blank=False, null =False, on_delete=models.CASCADE)
+    pizza = models.ForeignKey(Pizza, related_name='orders', blank=False, null=False, on_delete=models.CASCADE)
     pizza_size = models.CharField(max_length=255, choices=pizza_sizes, default="30cm")
     customer_name = models.CharField(max_length=255, blank=False, null=False)
     address = models.TextField(blank=False, null=False)

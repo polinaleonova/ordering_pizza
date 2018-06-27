@@ -9,6 +9,7 @@ class PizzaSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Order
-        fields = ('pizza_id', 'pizza_size', 'customer_name', 'address')
+        fields = ('pizza', 'pizza_size', 'customer_name', 'address')

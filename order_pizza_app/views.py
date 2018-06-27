@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Pizza, Order
 from .serializers import PizzaSerializer, OrderSerializer
@@ -19,5 +19,5 @@ class OrderViewSet(viewsets.ModelViewSet):
     """
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-
-
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('customer_name', 'pizza_size')
