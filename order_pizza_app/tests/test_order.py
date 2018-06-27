@@ -9,6 +9,7 @@ PIZZA_NAME2 = "PizzaTest2"
 DESCRIPTION2 = "Pizza test description2"
 PIZZA_SIZE = "30cm"
 CUSTOMER_NAME = "TestCustomer"
+CUSTOMER_NAME2 = "TestCustomer2"
 ADDRESS = "Test address 123"
 
 
@@ -32,7 +33,7 @@ class OrderAPITestCase(APITestCase):
         self.assertTrue(len(resp.data) == Pizza.objects.count())
 
     def test_get_order_by_id(self):
-        """GET api/order/{pk}/ returns a pizza"""
+        """GET api/order/{pk}/ returns an order"""
         pizza = self._create_pizza(PIZZA_NAME1, DESCRIPTION1)
         test_order = Order(pizza_id=pizza.id, pizza_size=PIZZA_SIZE,
                            customer_name=CUSTOMER_NAME, address=ADDRESS)
@@ -48,8 +49,29 @@ class OrderAPITestCase(APITestCase):
             'address': ADDRESS
         })
 
+    def test_get_order_by_customer_name(self):
+        """GET api/order/?customer_name={string} returns a list of orders"""
+        pizza = self._create_pizza(PIZZA_NAME1, DESCRIPTION1)
+        test_order1 = Order(pizza_id=pizza.id, pizza_size=PIZZA_SIZE,
+                           customer_name=CUSTOMER_NAME, address=ADDRESS)
+        test_order2 = Order(pizza_id=pizza.id, pizza_size=PIZZA_SIZE,
+                           customer_name=CUSTOMER_NAME2, address=ADDRESS)
+        test_order1.save()
+        test_order2.save()
+
+        url_detail = self.url + '?customer_name=' + test_order2.customer_name
+
+        resp = self.client.get(url_detail)
+
+        self.assertTrue(resp.data == [{
+            'pizza': pizza.id,
+            'pizza_size': PIZZA_SIZE,
+            'customer_name': CUSTOMER_NAME2,
+            'address': ADDRESS
+        }])
+
     def test_create_new_order(self):
-        """POST /api/order/ returns a order"""
+        """POST /api/order/ returns an order"""
         pizza = self._create_pizza(PIZZA_NAME1, DESCRIPTION1)
 
         resp = self.client.post(self.url, {
@@ -62,7 +84,7 @@ class OrderAPITestCase(APITestCase):
         self.assertEqual(resp.status_code, 201)
 
     def test_update_order_by_id(self):
-        """PUT api/order/{pk}/ returns a order"""
+        """PUT api/order/{pk}/ returns an order"""
         pizza1 = self._create_pizza(PIZZA_NAME1, DESCRIPTION1)
         pizza2 = self._create_pizza(PIZZA_NAME2, DESCRIPTION2)
         test_order = Order(pizza_id=pizza1.id, pizza_size=PIZZA_SIZE,
@@ -89,7 +111,7 @@ class OrderAPITestCase(APITestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_delete_pizza_by_id(self):
-        """DELETE /api/pizza/{pk}/ returns a pizza"""
+        """DELETE /api/pizza/{pk}/ returns an order"""
         pizza = self._create_pizza(PIZZA_NAME1, DESCRIPTION1)
         test_order = Order(pizza_id=pizza.id, pizza_size=PIZZA_SIZE,
                            customer_name=CUSTOMER_NAME, address=ADDRESS)

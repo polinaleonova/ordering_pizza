@@ -20,4 +20,4 @@ class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('customer_name', 'pizza_size')
+    filter_fields = ('customer_name',)
